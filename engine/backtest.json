@@ -1,0 +1,72 @@
+{
+ "matchups": 4200,
+ "weeks": 28,
+ "p": {
+  "brier": 0.2304,
+  "logloss": 0.6527
+ },
+ "calibration": [
+  {
+   "bin": "(0.0, 0.1]",
+   "n": 1,
+   "predicted": 0.088,
+   "actual": 0.0
+  },
+  {
+   "bin": "(0.1, 0.2]",
+   "n": 31,
+   "predicted": 0.172,
+   "actual": 0.226
+  },
+  {
+   "bin": "(0.2, 0.3]",
+   "n": 240,
+   "predicted": 0.261,
+   "actual": 0.204
+  },
+  {
+   "bin": "(0.3, 0.4]",
+   "n": 738,
+   "predicted": 0.355,
+   "actual": 0.347
+  },
+  {
+   "bin": "(0.4, 0.5]",
+   "n": 1087,
+   "predicted": 0.452,
+   "actual": 0.442
+  },
+  {
+   "bin": "(0.5, 0.6]",
+   "n": 1121,
+   "predicted": 0.549,
+   "actual": 0.55
+  },
+  {
+   "bin": "(0.6, 0.7]",
+   "n": 682,
+   "predicted": 0.644,
+   "actual": 0.65
+  },
+  {
+   "bin": "(0.7, 0.8]",
+   "n": 254,
+   "predicted": 0.736,
+   "actual": 0.744
+  },
+  {
+   "bin": "(0.8, 0.9]",
+   "n": 45,
+   "predicted": 0.832,
+   "actual": 0.711
+  },
+  {
+   "bin": "(0.9, 1.0]",
+   "n": 1,
+   "predicted": 0.923,
+   "actual": 1.0
+  }
+ ],
+ "team_sd_model_mean": 22.08,
+ "team_sd_actual": 23.49
+}

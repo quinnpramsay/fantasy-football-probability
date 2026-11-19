@@ -1,0 +1,36 @@
+name: update data
+on:
+  schedule:
+    - cron: '0 13 * * *'      # daily 8am ET (injury reports, lines, expert ranks)
+    - cron: '0 16 * * 0'      # Sunday 11am ET, before the early games
+    - cron: '0 22 * * 0'      # Sunday 5pm ET, after early games (final points)
+    - cron: '0 22 * * 1'      # Monday 5pm ET, before Monday night
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: update-data
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - uses: actions/cache@v4
+        with:
+          path: engine/cache
+          key: nflverse-${{ github.run_id }}
+          restore-keys: nflverse-
+      - run: pip install -r requirements.txt
+      - run: python engine/build.py
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+      - name: commit
+        run: |
+          git config user.name "data-bot"
+          git config user.email "data-bot@users.noreply.github.com"
+          git add data.js engine/report.json engine/history
+          git diff --cached --quiet || (git commit -m "data: $(date -u +'%Y-%m-%d %H:%M') UTC" && git push)
