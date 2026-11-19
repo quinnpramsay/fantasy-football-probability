@@ -1,5 +1,7 @@
 # fantasy football probability
 
+**Live:** https://quinnpramsay.github.io/fantasy-football-probability/
+
 A standalone fantasy football matchup engine. Type in your lineup on the left and your opponent's on the right
 (ESPN layout: QB, RB, RB, WR, WR, TE, FLEX, D/ST, K, 7 bench, IR). The page gives each player's projection and
 spread, and your win probability from 20,000 simulated weeks. It is not connected to ESPN or any league.
