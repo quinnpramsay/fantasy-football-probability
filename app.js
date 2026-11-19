@@ -331,9 +331,9 @@ document.addEventListener('click', ev => {
 });
 function save() { try { localStorage.setItem('ffp', JSON.stringify({ fmt, A: state.A, B: state.B, wk: FF.meta.season + '-' + FF.meta.week })); } catch (e) { } }
 function load() { try { const s = JSON.parse(localStorage.getItem('ffp') || 'null'); if (!s) return;
-  fmt = s.fmt || 0; document.querySelector(`input[name=fmt][value="${fmt}"]`).checked = true;
+  fmt = [0, 1, 2].includes(s.fmt) ? s.fmt : 0; document.querySelector(`input[name=fmt][value="${fmt}"]`).checked = true;
   const fresh = s.wk === FF.meta.season + '-' + FF.meta.week;
-  for (const k of ['A', 'B']) if (Array.isArray(s[k])) state[k] = s[k].map(x => x && byId.has(x.id) ? { id: x.id, fin: fresh ? x.fin : null } : null).concat(Array(SLOTS.length).fill(null)).slice(0, SLOTS.length);
+  for (const k of ['A', 'B']) if (Array.isArray(s[k])) state[k] = s[k].map(x => x && byId.has(x.id) ? { id: x.id, fin: fresh && x.fin != null && Number.isFinite(+x.fin) ? +x.fin : null } : null).concat(Array(SLOTS.length).fill(null)).slice(0, SLOTS.length);
 } catch (e) { } }
 
 $('#wk').textContent = FF.meta.season + ' · week ' + FF.meta.week;

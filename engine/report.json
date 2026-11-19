@@ -1,5 +1,5 @@
 {
- "built": "2026-11-19 21:08 UTC",
+ "built": "2026-11-19 21:22 UTC",
  "season": 2026,
  "week": 11,
  "oos_mae_ppr": {
@@ -20,7 +20,7 @@
  },
  "volatility_fit": {
   "k": 60.0,
-  "calibration_slope": 0.975,
+  "calibration_slope": 0.974,
   "corr": 0.072,
   "n_eval": 10848
  },
@@ -358,6 +358,6 @@
    "p_play": 0.331
   }
  ],
- "props_players": 161,
- "props_blended": 160
+ "props_players": 160,
+ "props_blended": 159
 }

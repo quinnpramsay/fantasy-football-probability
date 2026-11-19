@@ -1,6 +1,6 @@
 """Build data.js for the site: projections + outcome distributions for every relevant player this week.
 usage: python engine/build.py [--season 2026] [--week N] [--fast]   (--fast reuses cached walk-forward results)"""
-import argparse, json, math, os, sys, time
+import argparse, json, math, os, re, sys, time
 from datetime import datetime, timezone, timedelta
 import numpy as np
 import pandas as pd
@@ -22,6 +22,40 @@ def target_week(games, season):
     g = games[(games.season == season) & (games.game_type == 'REG')]
     open_ = g[g.score.isna()]
     return int(open_.week.min()) if len(open_) else int(g.week.max())
+
+
+_UNSAFE = re.compile(r"[^\w .'\u2019\-:\u00b7/()+,%]")
+
+
+def clean(o):
+    """Everything that reaches the page passes through here: text from outside sources (player names, teams, props,
+    expert files) keeps only letters, digits and plain punctuation, so it can never carry HTML or script."""
+    if isinstance(o, dict):
+        return {clean(k): clean(v) for k, v in o.items()}
+    if isinstance(o, (list, tuple)):
+        return [clean(v) for v in o]
+    if isinstance(o, str):
+        return _UNSAFE.sub('', o)[:80]
+    if isinstance(o, (bool, int, float)) or o is None:
+        return o
+    if isinstance(o, (np.integer, np.floating, np.bool_)):
+        return o.item()
+    raise TypeError(f'unexpected type in payload: {type(o)}')
+
+
+def check_payload(p):
+    pl = p['players']
+    pos = {}
+    for r in pl:
+        pos[r['p']] = pos.get(r['p'], 0) + 1
+        if not (isinstance(r.get('m'), list) and len(r['m']) == 3 and all(isinstance(v, (int, float)) and -10 <= v < 80 for v in r['m'])):
+            raise SystemExit(f"refusing to write data.js: bad projection for {r.get('n')}: {r.get('m')}")
+    need = dict(QB=25, RB=50, WR=70, TE=30, K=20, DST=20)
+    short = {k: (pos.get(k, 0), v) for k, v in need.items() if pos.get(k, 0) < v}
+    if short:
+        raise SystemExit(f'refusing to write data.js: too few players {short}')
+    if not p['tpl'] or not p['games']:
+        raise SystemExit('refusing to write data.js: missing distributions or games')
 
 
 def walk_forward(fs, fk, fd, fast, tag):
@@ -274,6 +308,8 @@ def main():
     payload = dict(meta=dict(season=season, week=week, built=built, levels=M.LEVELS.round(4).tolist(),
                              prop_weight=PROP_W, n_players=len(out)),
                    tpl=tpl_out, cop=cop, games=gm, players=out)
+    payload = clean(payload)
+    check_payload(payload)                     # raises (and the site keeps the last good data.js) if the build looks broken
     js = 'window.FF=' + json.dumps(payload, separators=(',', ':'), allow_nan=False) + ';\n'
     with open(os.path.join(ROOT, 'data.js'), 'w') as fh:
         fh.write(js)
