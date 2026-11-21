@@ -1,5 +1,5 @@
 {
- "built": "2026-11-20 20:53 UTC",
+ "built": "2026-11-21 19:54 UTC",
  "season": 2026,
  "week": 11,
  "oos_mae_ppr": {
@@ -358,6 +358,6 @@
    "p_play": 0.331
   }
  ],
- "props_players": 167,
- "props_blended": 166
+ "props_players": 175,
+ "props_blended": 174
 }
